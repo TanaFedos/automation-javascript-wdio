@@ -1,4 +1,4 @@
-# Automatizované testování - JavaScript, Webdriver.io
+# Automatizované testování Three foxes lounge
 
 ## Instalace
 `npm install`
