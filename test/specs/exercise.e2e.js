@@ -1,54 +1,106 @@
-import {username, password} from './fixtures.js'
+import { username, password, userFullName } from './fixtures.js'
 
-describe('Czechitas Login Page', () => {
+describe('Authentication page', () => {
 
-    it('should open login page', () => {
-        
+    beforeEach(() => {
         browser.reloadSession();
-        
-        browser.url('/prihlaseni');
+        browser.url('/login?back=my-account');
+    });
+
+    it('should sign in', () => {
+
 
         const emailField = $('#email');
-        const passwordField = $('#password');
-        const button = $('button[type="submit"]');
-        const link = $('a[class="btn btn-link"]');
-        
-        /*console.log ('Email field je displayed:' + emailField.isDisplayed());
-        console.log ('Password field je displayed:' + passwordField.isDisplayed());
-        console.log ('Email field je enabled:' + emailField.isEnabled());
-        console.log ('Password field je enabled:' + passwordField.isEnabled());
-        console.log( 'Text tlacitko je ' + button.getText());
-        console.log ('Odkaz je' + link.getAttribute('href'));*/
+        expect(emailField).toBeDisplayed();
+        expect(emailField).toBeEnabled();
 
-        emailField.setValue ('Lenka123@gmail.com');
-        passwordField.setValue('Lenka123');
-        button.click();
+        const passwordField = $('#passwd');
+        expect(passwordField).toBeDisplayed();
+        expect(passwordField).toBeEnabled();
 
-        /*const prihlaskyLink = $('.navbar-nav').$('=Přihlášky');*/
-        const prihlaskyLink = $('a[href="https://czechitas-luna.herokuapp.com/zaci"]');
+        const loginButton = $('#SubmitLogin');
+        expect(loginButton.getText()).toEqual('Sign in');
 
-        prihlaskyLink.click();
+        emailField.setValue(username);
+        passwordField.setValue(password);
+        loginButton.click();
 
-        const allRowsInTable = $$('tbody tr');
-        allRowsInTable.forEach(element => {
-            console.log(element.getText())
-        });
-
-        console.log('There are ' + allRowsInTable.length + ' rows in table.');
-        allRowsInTable.forEach(row => {
-            console.log(row.getText())
-        });
-
-        $('input[type="search"]').setValue('Novák');
-        const filteredRows = $('.dataTable').$('tbody').$$('tr')
-        console.log('There are ' + filteredRows.length + ' filtered rows in the table');
-        allRowsInTable.forEach(row => {
-            console.log(row.getText());
-        });
-
-
-        browser.pause(5000);
-        
+        const userNameDropdown = $('[data-toggle="dropdown"]');
+        expect(userNameDropdown.getText()).toEqual(userFullName);
     });
-    
+
+    it('should logout', () => {
+        const emailField = $('#email')
+        const passwordField = $('#passwd');
+        const loginButton = $('#SubmitLogin');
+
+        emailField.setValue(username);
+        passwordField.setValue(password);
+        loginButton.click();
+
+        const userNameDropdown = $('[data-toggle="dropdown"]');
+        expect(userNameDropdown.getText()).toEqual('Lenka');
+
+        userNameDropdown.click();
+        $('.dropdown-menu').$('[title="Log me out"]').click();
+
+        const loginLink = $('.user_login');
+        expect(loginLink.getText()).toEqual('Sign in')
+
+        loginLink.click();
+        expect(emailField).toBeDisplayed();
+        expect(passwordField).toBeDisplayed();
+        expect(loginButton).toBeDisplayed();
+    });
+});
+
+describe('My account page', () => {
+
+    beforeEach(() => {
+        browser.reloadSession();
+        browser.url('/login?back=my-account');
+    });
+
+    it('my account ', () => {
+
+        const emailField = $('#email');
+        expect(emailField).toBeDisplayed();
+        expect(emailField).toBeEnabled();
+
+        const passwordField = $('#passwd');
+        expect(passwordField).toBeDisplayed();
+        expect(passwordField).toBeEnabled();
+
+        const loginButton = $('#SubmitLogin');
+        expect(loginButton.getText()).toEqual('Sign in');
+
+        emailField.setValue(username);
+        passwordField.setValue(password);
+        loginButton.click();
+
+        const userNameDropdown = $('[data-toggle="dropdown"]');
+        expect(userNameDropdown.getText()).toEqual(userFullName);
+
+        const fieldOrders = $('a[title="Orders"]').$('span');
+        expect(fieldOrders).toBeDisplayed();
+        expect(fieldOrders).toBeEnabled();
+
+        const fieldCredit = $('a[title="Credit slips"]').$('span');
+        expect(fieldCredit).toBeDisplayed();
+        expect(fieldCredit).toBeEnabled();
+
+        const fieldAddresses = $('a[title="Addresses"]').$('span');
+        expect(fieldAddresses).toBeDisplayed();
+        expect(fieldAddresses).toBeEnabled();
+
+        const fieldPersonal = $('a[title="Information"]').$('span');
+        expect(fieldPersonal).toBeDisplayed();
+        expect(fieldPersonal).toBeEnabled();
+
+        const fieldHome = $('a[title="Home"]').$('span');
+        expect(fieldHome).toBeDisplayed();
+        fieldHome.click();
+        browser.saveScreenshot('main_page.png');
+
+    });
 });

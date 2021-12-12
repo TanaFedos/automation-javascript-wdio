@@ -16,7 +16,7 @@ exports.config = {
         'goog:chromeOptions': {
             args: [
                 // '--window-size=1920,1080',
-                // '--headless',
+               // '--headless',
                 '--no-sandbox',
                 '--disable-gpu',
                 '--disable-setuid-sandbox',
@@ -33,22 +33,22 @@ exports.config = {
     }],
     logLevel: 'warn',
     bail: 0,
-    baseUrl: 'ADRESA TESTOVANE APLIKACE',
+    baseUrl: 'http://czechitas-datestovani-hackathon.cz/en/',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
     services: ['selenium-standalone'],
     framework: 'mocha',
     reporters: ['spec',
-        // [HtmlReporter, {
-        //         debug: true,
-        //         outputDir: './reports/html-reports/',
-        //         filename: 'report.html',
-        //         reportTitle: 'Test Report Title',
-        //         showInBrowser: true,
-        //         useOnAfterCommandForScreenshot: true
-        //     }
-        // ]
+        [HtmlReporter, {
+                debug: true,
+                outputDir: './reports/html-reports/',
+                filename: 'report.html',
+                reportTitle: 'Test Report Title',
+                showInBrowser: true,
+                useOnAfterCommandForScreenshot: true
+            }
+        ]
     ],
     mochaOpts: {
         ui: 'bdd',
@@ -73,4 +73,15 @@ exports.config = {
             await global.reportAggregator.createReport();
         })();
     },
+
+    afterTest: function (
+        test,
+        context,
+        { error, result, duration, passed, retries }
+      ) {
+        // take a screenshot anytime a test fails and throws an error
+        if (error) {
+          browser.saveScreenshot('error_' + new Date().toISOString() + '.png'); 
+        }
+      },
 }

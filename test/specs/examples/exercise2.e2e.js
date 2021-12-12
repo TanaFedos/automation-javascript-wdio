@@ -46,7 +46,7 @@ describe('Login And Applications Page', () => {
         $('input[type="search"]').setValue('Novák');
         const filteredRows = $('.dataTable').$('tbody').$$('tr')
         console.log('There are ' + filteredRows.length + ' filtered rows in the table');
-        rows.forEach(row => {
+        filteredRows.forEach(row => {
             console.log(row.getText());
         });
 
